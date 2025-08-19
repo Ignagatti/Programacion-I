@@ -328,5 +328,3 @@ class Reservar_mesa:
 ventana= Tk()
 aplicacion=SeleccionarTipo(ventana)
 ventana.mainloop()
-
-vinculandosugundapc=0
