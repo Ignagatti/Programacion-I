@@ -328,3 +328,5 @@ class Reservar_mesa:
 ventana= Tk()
 aplicacion=SeleccionarTipo(ventana)
 ventana.mainloop()
+
+prueba="pruebas"
