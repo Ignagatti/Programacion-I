@@ -23,7 +23,6 @@ class SeleccionarTipo:
         self.ventana.title("Tipo de Usuario")
 
         fondo = "#88FFB4"
-
         #Dividimos en dos partes
 
         self.parte_superior= Frame(self.ventana, bg=fondo)
@@ -329,3 +328,5 @@ class Reservar_mesa:
 ventana= Tk()
 aplicacion=SeleccionarTipo(ventana)
 ventana.mainloop()
+
+vinculandosugundapc=0
