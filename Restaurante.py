@@ -329,4 +329,3 @@ ventana= Tk()
 aplicacion=SeleccionarTipo(ventana)
 ventana.mainloop()
 
-prueba="pruebas"
