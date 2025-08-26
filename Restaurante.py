@@ -19,12 +19,12 @@ else:
 archivo_Reservas = "Datos_Reservas.xlsx"
 if os.path.exists(archivo_Reservas):
     reservas = load_workbook(archivo_Reservas)
-    ws = reservas.active
+    wreservas = reservas.active
 else:
     reservas = Workbook()
-    ws = reservas.active
-    ws.append(["ID", "Usuario", "Estado", "Capacidad"])
-    wb.save(archivo_Reservas)
+    wreservas = reservas.active
+    wreservas.append(["ID", "Usuario", "Estado", "Capacidad"])
+    reservas.save(archivo_Reservas)
 
 
 #Arranca el sistema
