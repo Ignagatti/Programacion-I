@@ -28,7 +28,6 @@ else:
 
 
 #Arranca el sistema
-
 class SeleccionarTipo:
     def __init__(self, ventana):
         self.ventana= ventana
@@ -36,7 +35,7 @@ class SeleccionarTipo:
         self.ventana.title("Tipo de Usuario")
 
         fondo = "#88FFB4"
-        #Dividimos en dos partes
+        #Dividimos en dos partes la pantalla
 
         self.parte_superior= Frame(self.ventana, bg=fondo)
         self.parte_superior.pack(fill="both", expand=True)
@@ -52,8 +51,10 @@ class SeleccionarTipo:
         self.render = ImageTk.PhotoImage(self.imagen)
         Label(self.parte_superior, image=self.render, bg=fondo).pack(expand=True, fill="both", side="top")
 
+        # titulos
         Label(self.parte_superior, text="¿Quién eres?", font=("Calisto MT", 30, "bold"), bg=fondo).pack(pady=10)
 
+        #Botones
         Button(self.parte_inferior, text="Cliente", width=35, height=2, font=("Arial", 14), command=lambda: self.elegir_cliente("Cliente")).grid(row=2, column=0, columnspan=2, padx=35, pady=5)
 
         Button(self.parte_inferior, text="Administrador", width=35, height=2, font=("Arial", 14), command=lambda: self.elegir_admin("Administrador")).grid(row=4, column=0, columnspan=4, padx=35, pady=5)
@@ -69,7 +70,7 @@ class SeleccionarTipo:
 
 #Clase para cliente donde ingresa o registra
 class Login:
-    def __init__(self, ventana, tipo):
+    def __init__(self, ventana, tipo): #Constructores
         self.tipo=tipo
         self.ventana=Toplevel(ventana)
         self.ventana.geometry("400x700")
@@ -77,7 +78,7 @@ class Login:
 
         fondo = "#88FFB4"
 
-        #dividimos en dos partes 
+        #Dividimos en dos partes la pantalla 
        
         self.parte_superior= Frame(self.ventana, bg=fondo)
         self.parte_superior.pack(fill="both", expand=True)
@@ -114,7 +115,7 @@ class Login:
         Registro(ventana,self.tipo)
 
 class Registro:
-        def __init__(self, ventana, tipo):
+        def __init__(self, ventana, tipo): #Constructores
             self.tipo=tipo
             self.ventana= Toplevel(ventana)
             self.ventana.geometry("400x700")
@@ -175,7 +176,7 @@ class Registro:
             Login_Ingresar(ventana, self.tipo)
 
 class Login_Ingresar:
-    def __init__(self, ventana, tipo):
+    def __init__(self, ventana, tipo): #Constructores
         self.tipo=tipo
         self.ventana= Toplevel(ventana)
         self.ventana.geometry("400x700")
@@ -253,7 +254,7 @@ class Login_Ingresar:
             messagebox.showerror("Error", "Usuario o contraseña incorrecto")
 
 class Restaurante:
-    def __init__(self, ventana, tipo):
+    def __init__(self, ventana, tipo): #Constructores
         self.tipo=tipo
         self.ventana= Toplevel(ventana)
         self.ventana.geometry("700x700")
@@ -294,7 +295,7 @@ class Restaurante:
 
 #clase que va cuando apretamos la mesa, cuando se apreta el boton de la mesa se abre esto
 class Reservar_mesa:
-    def __init__(self, ventana, tipo):
+    def __init__(self, ventana, tipo): #Constructores
         self.tipo=tipo
         self.ventana= Toplevel(ventana)
         self.ventana.geometry("400x700")
