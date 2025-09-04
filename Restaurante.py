@@ -114,6 +114,7 @@ class Login:
         self.ventana.destroy()
         Registro(ventana,self.tipo)
 
+#clase cuando se toma la opcion de registrar y si todo esta bien se va a la pestaña login
 class Registro:
         def __init__(self, ventana, tipo): #Constructores
             self.tipo=tipo
@@ -161,10 +162,12 @@ class Registro:
             usuario = self.entry_usuario.get()
             contrasena = self.entry_contrasena.get()
 
+            #se valida que los campos se hayan completado
             if not usuario or not contrasena:
                 messagebox.showwarning("Cuidado!", "Se deben completar ambos campos")
                 return
 
+            #Agregamos usuario y contraseña al excel de usuarios
             ws.append([usuario, contrasena, self.tipo])
             wb.save(archivo_usuarios)
             messagebox.showinfo("Datos", "Se guardaron los datos")
@@ -252,107 +255,149 @@ class Login_Ingresar:
             Restaurante(ventana, self.tipo)
         else:
             messagebox.showerror("Error", "Usuario o contraseña incorrecto")
-
+            
 class Restaurante:
-    def __init__(self, ventana, tipo): #Constructores
-        self.tipo=tipo
-        self.ventana= Toplevel(ventana)
+    def __init__(self, ventana, tipo):
+        self.tipo = tipo
+        self.ventana = Toplevel(ventana)
         self.ventana.geometry("700x700")
         self.ventana.title("Restaurante")
         
         fondo = "#88FFB4"
-
         self.ventana.configure(bg=fondo)
 
-        #dividimos
+        # Frames principales
         self.parte_superior = Frame(self.ventana, bg=fondo)
         self.parte_superior.pack(fill="both", expand=True)
 
         self.parte_inferior = Frame(self.ventana, bg=fondo)
         self.parte_inferior.pack(fill="both", expand=True)
 
-        self.parte_inferior.columnconfigure(0, weight=1)
-        self.parte_inferior.columnconfigure(1, weight=1)
-
-        #Agregamos la imagen del restaurante 
+        # Imagen del restaurante
         self.imagen = Image.open(r"Logo.png").resize((170, 180))
         self.render = ImageTk.PhotoImage(self.imagen)
         Label(self.parte_superior, image=self.render, bg=fondo).pack(pady=10)
 
-        Button(self.parte_inferior, text="Cerrar Sesion", width=16, font=("Arial", 12), command=lambda: self.reserva(ventana)).pack(side="bottom", anchor="w", padx=25, pady=10)
+        # Botón Cerrar Sesión
+        Button(self.parte_inferior, text="Cerrar Sesion", width=16, font=("Arial", 12),
+               command=lambda: self.cerrar_sesion(ventana)).pack(pady=10)
 
+        # Inicializamos mesas y filas
+        self.mesas = 6
+        self.filas = []
+        self.estado_mesas = {}   # {1: "Libre", 2: "Libre", ...}
+        self.botones_mesas = {}  # Guardamos los botones para cambiar color
+
+        # Dibujar mesas iniciales
+        for i in range(1, self.mesas + 1):
+            if (i - 1) % 3 == 0:
+                fila_frame = Frame(self.parte_superior, bg=fondo)
+                fila_frame.pack()
+                self.filas.append(fila_frame)
+            
+            btn = Button(
+                self.filas[-1],
+                text=f"Mesa {i}",
+                width=12,
+                height=3,
+                bg="green",  # verde = libre
+                command=lambda n=i: Reservar_mesa(self.ventana, self.tipo, self, n)
+            )
+            btn.pack(side="left", padx=10, pady=10)
+            self.estado_mesas[i] = "Libre"
+            self.botones_mesas[i] = btn
+
+        # Botón Agregar mesa solo para admin
         if self.tipo == "Administrador":
-            #Agregar funciones que haga el admin, esto solo le aparece al administrador (ordenar)
-            Button(self.parte_inferior, text="Agregar Mesa", width=16,font=("Arial", 12)).pack(side="bottom", anchor="n", padx=25, pady=10)
+            Button(self.parte_inferior, text="Agregar Mesa", width=16, font=("Arial", 12),
+                   command=self.agregar_mesa).pack(pady=10)
 
-    def reserva(self,ventana):
-        self.ventana.destroy()
-        Reservar_mesa(ventana, self.tipo)
-    
-    def cerrar_sesion(self,ventana):
+    def cerrar_sesion(self, ventana):
         self.ventana.destroy()
         ventana.deiconify()
 
-#clase que va cuando apretamos la mesa, cuando se apreta el boton de la mesa se abre esto
+    def agregar_mesa(self):
+        self.mesas += 1
+        fila_index = (self.mesas - 1) // 3
+
+        if fila_index >= len(self.filas):
+            fila_frame = Frame(self.parte_superior, bg="#88FFB4")
+            fila_frame.pack()
+            self.filas.append(fila_frame)
+        else:
+            fila_frame = self.filas[fila_index]
+
+        btn = Button(
+            fila_frame,
+            text=f"Mesa {self.mesas}",
+            width=12,
+            height=3,
+            bg="green",
+            command=lambda n=self.mesas: Reservar_mesa(self.ventana, self.tipo, self, n)
+        )
+        btn.pack(side="left", padx=10, pady=10)
+        self.estado_mesas[self.mesas] = "Libre"
+        self.botones_mesas[self.mesas] = btn
+
+
 class Reservar_mesa:
-    def __init__(self, ventana, tipo): #Constructores
-        self.tipo=tipo
-        self.ventana= Toplevel(ventana)
-        self.ventana.geometry("400x700")
-        self.ventana.title("Ingresar")
+    def __init__(self, ventana, tipo, restaurante, numero_mesa):
+        self.tipo = tipo
+        self.restaurante = restaurante
+        self.numero_mesa = numero_mesa
+
+        self.ventana = Toplevel(ventana)
+        self.ventana.geometry("400x400")
+        self.ventana.title(f"Mesa {numero_mesa}")
 
         fondo = "#88FFB4"
+        self.ventana.configure(bg=fondo)
 
-        #dividimos
-        self.parte_superior = Frame(self.ventana, bg=fondo)
-        self.parte_superior.pack(fill="both", expand=True)
+        # Título con número de mesa
+        Label(self.ventana, text=f"Mesa {numero_mesa}", font=("Calisto MT", 24, "bold"), bg=fondo).pack(pady=20)
 
-        self.parte_inferior = Frame(self.ventana, bg=fondo)
-        self.parte_inferior.pack(fill="both", expand=True)
-
-        self.parte_inferior.columnconfigure(0, weight=1)
-        self.parte_inferior.columnconfigure(1, weight=1)
-
-        #Etiqueta
         if self.tipo == "Administrador":
-            Label(self.parte_superior, text="Vista Admin", font=("Calisto MT", 30, "bold"), bg=fondo).pack(side="top", pady=20)
+            Button(self.ventana, text="Desocupar", width=16, font=("Arial", 12),
+                   command=self.desocupar).pack(pady=5)
+            Button(self.ventana, text="Modificar", width=16, font=("Arial", 12),
+                   command=self.modificar).pack(pady=5)
+            Button(self.ventana, text="Eliminar", width=16, font=("Arial", 12),
+                   command=self.eliminar).pack(pady=5)
+            Button(self.ventana, text="Atras", width=16, font=("Arial", 12),
+                   command=self.ventana.destroy).pack(pady=5)
         else:
-            Label(self.parte_superior, text="Reservar Mesa:", font=("Calisto MT", 30, "bold"), bg=fondo).pack(side="top", pady=20)
+            Label(self.ventana, text="Nombre:", font=("Arial", 16), bg=fondo).pack(pady=10)
+            self.entry_nombre = Entry(self.ventana, font=("Arial", 16))
+            self.entry_nombre.pack(pady=5)
 
-        #Imagen
-        self.imagen = Image.open(r"reserva.png").resize((210, 220))
-        self.render = ImageTk.PhotoImage(self.imagen)
-        Label(self.parte_superior, image=self.render, bg=fondo).pack(expand=True, fill="both", side="top")
-        
-        #Entradas
-        if self.tipo == "Administrador":
-            #Hacer funciones para estos botones
-             #este boton solo si esta ocupada
-            Button(self.parte_inferior, text="Desocupar", width=16, font=("Arial", 12), command=lambda: self.regresar(ventana)).grid(row=2, column=0, columnspan=4, padx=35, pady=5)
+            Button(self.ventana, text="Guardar", width=16, font=("Arial", 12),
+                   command=self.guardar).pack(pady=5)
+            Button(self.ventana, text="Atras", width=16, font=("Arial", 12),
+                   command=self.ventana.destroy).pack(pady=5)
 
-            Button(self.parte_inferior, text="Modificar", width=16, font=("Arial", 12), command=lambda: self.regresar(ventana)).grid(row=8, column=0, columnspan=4, padx=35, pady=5)
+    def guardar(self):
+        nombre = self.entry_nombre.get()
+        if nombre.strip() != "":
+            self.restaurante.estado_mesas[self.numero_mesa] = "Ocupada"
+            self.restaurante.botones_mesas[self.numero_mesa].configure(bg="red")
+            self.ventana.destroy()
 
-            Button(self.parte_inferior, text="Eliminar", width=16, font=("Arial", 12), command=lambda: self.regresar(ventana)).grid(row=14, column=0, columnspan=4, padx=35, pady=5)
-
-            Button(self.parte_inferior, text="Atras", width=16, font=("Arial", 12), command=lambda: self.regresar(ventana)).grid(row=20, column=0, columnspan=4, padx=35, pady=5)
-
-        else:   
-            Label(self.parte_inferior, text="Nombre:", font=("Arial", 16), bg=fondo).grid(row=0, column=0, pady=10, sticky="e")
-            self.entry_nombre = Entry(self.parte_inferior, bd=0, width=14, font=("Arial", 16))
-            self.entry_nombre .grid(row=0, column=1, columnspan=3, padx=5, sticky="w")
-
-            #Iria un label que diga el numero de mesa y cantidad de personas de la que es la mesa
-
-            #el primer boton es para guardar, llamaria a una funcion que guarda los datos y hace que cambie de color el boton
-            Button(self.parte_inferior, text="Guardar", width=16, font=("Arial", 12), command=lambda: self.regresar(ventana)).grid(row=2, column=0, columnspan=4, padx=35, pady=5)
-
-            Button(self.parte_inferior, text="Atras", width=16, font=("Arial", 12), command=lambda: self.regresar(ventana)).grid(row=8, column=0, columnspan=4, padx=35, pady=5)
-        
-    def regresar(self,ventana):
+    def desocupar(self):
+        self.restaurante.estado_mesas[self.numero_mesa] = "Libre"
+        self.restaurante.botones_mesas[self.numero_mesa].configure(bg="green")
         self.ventana.destroy()
-        Restaurante(ventana, self.tipo)
 
+    def modificar(self):
+        # Para implementar: modificar datos de la reserva
+        self.ventana.destroy()
 
+    def eliminar(self):
+        btn = self.restaurante.botones_mesas[self.numero_mesa]
+        btn.destroy()
+        del self.restaurante.estado_mesas[self.numero_mesa]
+        del self.restaurante.botones_mesas[self.numero_mesa]
+        self.ventana.destroy()
+        
 ventana= Tk()
 aplicacion=SeleccionarTipo(ventana)
 ventana.mainloop()
