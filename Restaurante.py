@@ -2,6 +2,9 @@ from tkinter import Tk, Toplevel, Label, Button, Entry, Frame, messagebox
 from PIL import Image, ImageTk
 from openpyxl import Workbook, load_workbook
 import os
+import tkinter as tk
+from tkinter import Frame, Label, Button, Toplevel
+
 
 #creo los archivos de datos 
 #BDD PARA USUARIOS
@@ -59,6 +62,7 @@ class SeleccionarTipo:
 
         Button(self.parte_inferior, text="Administrador", width=35, height=2, font=("Arial", 14), command=lambda: self.elegir_admin("Administrador")).grid(row=4, column=0, columnspan=4, padx=35, pady=5)
 
+   
     def elegir_cliente(self,tipo):
         self.ventana.withdraw()
         Login(self.ventana, tipo)
@@ -102,9 +106,29 @@ class Login:
 
         Button(self.parte_inferior, text="Atras", width=35, height=2, font=("Arial", 14), command=lambda: self.regresar(ventana)).grid(row=6, column=0, columnspan=6, padx=35, pady=5)
 
+
+         # --- BOTÓN DE INFORMACIÓN REDONDO ARRIBA A LA DERECHA ---
+        self.canvas_info = tk.Canvas(self.parte_superior, width=30, height=30, highlightthickness=0, bg=fondo)
+        self.canvas_info.place(relx=1.0, x=-15, y=15, anchor="ne")
+
+        circulo = self.canvas_info.create_oval(2, 2, 28, 28, fill="#3498db", outline="#2980b9")
+        texto = self.canvas_info.create_text(15, 15, text="i", fill="white", font=("Times New Roman", 14, "italic"))
+
+        # hacer que tanto el círculo como la letra sean clickeables
+        self.canvas_info.tag_bind(circulo, "<Button-1>", lambda e: self.mostrar_info())
+        self.canvas_info.tag_bind(texto, "<Button-1>", lambda e: self.mostrar_info())
+
     def regresar(self,ventana):
         self.ventana.destroy()
         ventana.deiconify()
+    
+    def mostrar_info(self):
+        ventana_info = Toplevel(self.ventana)
+        ventana_info.title("Información")
+        ventana_info.geometry("400x200")
+        Label(ventana_info, text="Abrimos de jueves a domingo...\n\n Te acompañamos en tus momentos especiales,\n ya sea en el almuerzo o en la cena. ¡Te esperamos! \n\n\n Número de contacto: 3546 879736", wraplength=280, justify="center").pack(pady=20)
+        Button(ventana_info, text="Cerrar", command=ventana_info.destroy).pack(pady=10)
+
         
     def eleccion_ingresar(self, ventana):
         self.ventana.destroy()
