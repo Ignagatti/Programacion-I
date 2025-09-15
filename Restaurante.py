@@ -297,6 +297,20 @@ class Restaurante:
         self.parte_inferior = Frame(self.ventana, bg=fondo)
         self.parte_inferior.pack(fill="both", expand=True)
 
+                 # --- BOTÓN DE INFORMACIÓN REDONDO ARRIBA A LA DERECHA ---
+        self.canvas_info = tk.Canvas(self.parte_superior, width=30, height=30, highlightthickness=0, bg=fondo)
+        self.canvas_info.place(relx=1.0, x=-15, y=15, anchor="ne")
+
+        circulo = self.canvas_info.create_oval(2, 2, 28, 28, fill="#3498db", outline="#2980b9")
+        texto = self.canvas_info.create_text(15, 15, text="i", fill="white", font=("Times New Roman", 14, "italic"))
+
+        # hacer que tanto el círculo como la letra sean clickeables
+        self.canvas_info.tag_bind(circulo, "<Button-1>", lambda e: self.mostrar_info())
+        self.canvas_info.tag_bind(texto, "<Button-1>", lambda e: self.mostrar_info())
+        
+
+
+
         # Imagen del restaurante
         self.imagen = Image.open(r"Logo.png").resize((170, 180))
         self.render = ImageTk.PhotoImage(self.imagen)
@@ -362,6 +376,23 @@ class Restaurante:
         btn.pack(side="left", padx=10, pady=10)
         self.estado_mesas[self.mesas] = {"estado": "Libre", "nombre": ""}
         self.botones_mesas[self.mesas] = btn
+
+#funcion que muestra mensaje de historia del restaurante
+    def mostrar_info(self):
+        ventana_info = Toplevel(self.ventana)
+        ventana_info.title("Nuestra Historia")
+        ventana_info.geometry("400x250")
+        Label(
+            ventana_info,
+            text="Hace más de 20 años abrimos nuestras puertas\n"
+                "con la idea de compartir el sabor de la cocina casera.\n\n"
+                "Con el tiempo nos convertimos en un punto de encuentro\n"
+                "para familias y amigos que buscan disfrutar\n"
+                "de buena comida y momentos inolvidables.",
+            wraplength=320,
+            justify="center"
+        ).pack(pady=20)
+        Button(ventana_info, text="Cerrar", command=ventana_info.destroy).pack(pady=10)
 
 
 class Reservar_mesa:
