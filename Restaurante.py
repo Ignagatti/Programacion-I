@@ -511,11 +511,11 @@ class Reservar_mesa:
                    command=self.regresar).grid(row=6, column=0, columnspan=2, pady=5)
 
         else:
-            Label(self.parte_inferior, text="Nombre:", font=("Arial", 16), bg=fondo).grid(row=0, column=0, pady=10, sticky="e")
-            self.entry_nombre = Entry(self.parte_inferior, bd=0, width=14, font=("Arial", 16))
-            self.entry_nombre.grid(row=0, column=1, padx=5, sticky="w")
+            #Label(self.parte_inferior, text="Nombre:", font=("Arial", 16), bg=fondo).grid(row=0, column=0, pady=10, sticky="e")
+           # self.entry_nombre = Entry(self.parte_inferior, bd=0, width=14, font=("Arial", 16))
+            #self.entry_nombre.grid(row=0, column=1, padx=5, sticky="w")
 
-            Button(self.parte_inferior, text="Guardar", width=16, font=("Arial", 12),
+            Button(self.parte_inferior, text="Reservar", width=16, font=("Arial", 12),
                    command=self.guardar).grid(row=2, column=0, columnspan=2, pady=5)
             Button(self.parte_inferior, text="Atrás", width=16, font=("Arial", 12),
                    command=self.regresar).grid(row=4, column=0, columnspan=2, pady=5)
