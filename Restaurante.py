@@ -515,8 +515,9 @@ class Reservar_mesa:
            # self.entry_nombre = Entry(self.parte_inferior, bd=0, width=14, font=("Arial", 16))
             #self.entry_nombre.grid(row=0, column=1, padx=5, sticky="w")
 
-            Button(self.parte_inferior, text="Reservar", width=16, font=("Arial", 12),
-                   command=self.guardar).grid(row=2, column=0, columnspan=2, pady=5)
+            if mesa_info["estado"] == "Libre":
+                Button(self.parte_inferior, text="Reservar", width=16, font=("Arial", 12),
+                       command=self.guardar).grid(row=2, column=0, columnspan=2, pady=5)
             Button(self.parte_inferior, text="Atrás", width=16, font=("Arial", 12),
                    command=self.regresar).grid(row=4, column=0, columnspan=2, pady=5)
 
@@ -625,7 +626,7 @@ class Reservar_mesa:
         mesa_info = self.restaurante.estado_mesas[self.mesa_id]
         if mesa_info["estado"] == "Ocupada" and mesa_info["nombre"] == self.restaurante.usuario and self.tipo != "Administrador":
             Button(self.parte_inferior, text="Cancelar Reserva", width=16, font=("Arial", 12),
-                   command=self.cancelar_reserva).grid(row=6, column=0, columnspan=2, pady=5)
+                   command=self.cancelar_reserva).grid(row=2, column=0, columnspan=2, pady=5)
 
     def eliminar_de_excel(self):
         archivo = "Datos_Reservas.xlsx"
