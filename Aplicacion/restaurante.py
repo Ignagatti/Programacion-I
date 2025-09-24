@@ -1,8 +1,6 @@
 # restaurante.py
 import tkinter as tk
 from tkinter import Toplevel, Frame, Button, Label, Entry, messagebox
-
-from tkinter import Toplevel, Frame, Button, Label, Entry, messagebox
 from PIL import Image, ImageTk
 from openpyxl import Workbook, load_workbook
 import os
@@ -13,14 +11,18 @@ if os.path.exists(archivo_Reservas):
     reservas = load_workbook(archivo_Reservas)
     wreservas = reservas.active
 else:
+    # Si no existe el archivo, lo creo y agrego las 9 mesas por defecto
     reservas = Workbook()
     wreservas = reservas.active
     wreservas.append(["ID", "Usuario", "Estado", "Capacidad"])
+    for i in range(1, 10):  # mesas 1 a 9
+        wreservas.append([i, "", "Libre", 4])  # capacidad por defecto 4
     reservas.save(archivo_Reservas)
+
 
 class Restaurante:
     def __init__(self, ventana, tipo, usuario):
-        #Constructores
+        # Constructores
         self.tipo = tipo
         self.usuario = usuario
         self.ventana = Toplevel(ventana)
@@ -28,10 +30,10 @@ class Restaurante:
         self.ventana.title("Restaurante")
 
         fondo = "#588E6B"
-        fondo_derecha= "#41694F"
-        color_botones= "#A7CBBF"
+        fondo_derecha = "#41694F"
+        color_botones = "#A7CBBF"
 
-        #CONTENEDOR PRINCIPAL DIVIDIDO EN 2 COLUMNAS
+        # CONTENEDOR PRINCIPAL DIVIDIDO EN 2 COLUMNAS
         self.contenedor = Frame(self.ventana, bg=fondo)
         self.contenedor.pack(fill="both", expand=True)
 
@@ -39,28 +41,40 @@ class Restaurante:
         self.contenedor.columnconfigure(1, weight=2)  # derecha = formulario
         self.contenedor.rowconfigure(0, weight=1)
 
-        #FRAME IZQUIERDO (IMAGEN GRANDE)
+        # FRAME IZQUIERDO (IMAGEN GRANDE)
         self.izquierda = Frame(self.contenedor, bg=fondo, relief="raised", bd=6)
         self.izquierda.grid(row=0, column=0, sticky="nsew")
 
-        #FRAME DERECHO (FORMULARIO)
-        self.derecha = Frame(self.contenedor, bg=fondo_derecha,  relief="raised", bd=4 )
+        # FRAME DERECHO (FORMULARIO)
+        self.derecha = Frame(self.contenedor, bg=fondo_derecha, relief="raised", bd=4)
         self.derecha.grid(row=0, column=1, sticky="nsew")
 
         # Parte superior: título e imagen de login
         self.parte_superior = Frame(self.derecha, bg=fondo_derecha)
         self.parte_superior.pack(fill="both", expand=True)
 
-        Label(self.parte_superior, text="Que desea hacer?", font=("Calisto MT", 20, "bold"), bg=fondo_derecha).pack(side="top", pady=20)
+        Label(
+            self.parte_superior,
+            text="Que desea hacer?",
+            font=("Calisto MT", 20, "bold"),
+            bg=fondo_derecha,
+        ).pack(side="top", pady=20)
 
-        #Imagen
+        # Imagen
         try:
             self.imagen = Image.open(r"Logo.png").resize((180, 190))
             self.render = ImageTk.PhotoImage(self.imagen)
-            Label(self.parte_superior, image=self.render, bg=fondo_derecha).pack(expand=True, fill="both", side="top")
+            Label(self.parte_superior, image=self.render, bg=fondo_derecha).pack(
+                expand=True, fill="both", side="top"
+            )
         except Exception:
-            Label(self.parte_superior, text="[Imagen login no encontrada]", bg=fondo_derecha, font=("Arial", 14, "italic"), fg="gray").pack(expand=True, fill="both", side="top")
-
+            Label(
+                self.parte_superior,
+                text="[Imagen login no encontrada]",
+                bg=fondo_derecha,
+                font=("Arial", 14, "italic"),
+                fg="gray",
+            ).pack(expand=True, fill="both", side="top")
 
         # Parte inferior: entradas y botones
         self.parte_inferior = Frame(self.derecha, bg=fondo_derecha)
@@ -70,140 +84,164 @@ class Restaurante:
         self.parte_inferior.columnconfigure(1, weight=1)
 
         # Botón de información
-        self.canvas_info = tk.Canvas(self.izquierda, width=30, height=30, highlightthickness=0, bg=fondo)
+        self.canvas_info = tk.Canvas(
+            self.izquierda, width=30, height=30, highlightthickness=0, bg=fondo
+        )
         self.canvas_info.place(relx=1.0, x=-15, y=15, anchor="ne")
-        circulo = self.canvas_info.create_oval(2, 2, 28, 28, fill="#3498db", outline="#2980b9")
-        texto = self.canvas_info.create_text(15, 15, text="i", fill="white", font=("Times New Roman", 14, "italic"))
+        circulo = self.canvas_info.create_oval(
+            2, 2, 28, 28, fill="#3498db", outline="#2980b9"
+        )
+        texto = self.canvas_info.create_text(
+            15, 15, text="i", fill="white", font=("Times New Roman", 14, "italic")
+        )
         self.canvas_info.tag_bind(circulo, "<Button-1>", lambda e: self.mostrar_info())
         self.canvas_info.tag_bind(texto, "<Button-1>", lambda e: self.mostrar_info())
 
-        #Fijamos las mesas principales en 6
-        self.mesas = 9
-        self.filas = [] 
-        self.estado_mesas = {} #Diccionario donde guardamos el estado, el nombre y la capacidad
-        self.botones_mesas = {} #Diccionario donde se guardan los botones
+        # Diccionarios de control
+        self.filas = []
+        self.estado_mesas = {}
+        self.botones_mesas = {}
 
-        # Crear mesas iniciales
-        for i in range(1, self.mesas + 1):
-            if (i - 1) % 3 == 0:
+        # Cargar estado desde Excel (siempre)
+        reservas = load_workbook(archivo_Reservas)
+        hoja = reservas.active
+        for fila in hoja.iter_rows(min_row=2, values_only=True):
+            if fila is None or len(fila) < 4 or fila[0] is None:
+                continue
+            mesa_id, nombre, estado, capacidad = fila[:4]
+            try:
+                mesa_id = int(mesa_id)
+            except (TypeError, ValueError):
+                continue
+
+            fila_index = (mesa_id - 1) // 3
+            if fila_index >= len(self.filas):
                 fila_frame = Frame(self.izquierda, bg=fondo)
                 fila_frame.pack()
                 self.filas.append(fila_frame)
+            else:
+                fila_frame = self.filas[fila_index]
 
-            capacidad_defecto = 4  # capacidad por defecto
+            texto_btn = (
+                f"Mesa {mesa_id}\nCapacidad: {capacidad}"
+                if estado == "Libre"
+                else f"Mesa {mesa_id}\n({nombre})\nCapacidad: {capacidad}"
+            )
 
             btn = Button(
-                self.filas[-1],
-                text=f"Mesa {i}\nCapacidad: {capacidad_defecto}",
+                fila_frame,
+                text=texto_btn,
                 width=12,
                 height=3,
-                bg="green",
-                command=lambda n=i: Reservar_mesa(self.ventana, self.tipo, self, n)
+                bg="red" if estado == "Ocupada" else "green",
+                command=lambda n=mesa_id: Reservar_mesa(
+                    self.ventana, self.tipo, self, n
+                ),
             )
             btn.pack(side="left", padx=40, pady=10)
 
-            # guardo el estado con capacidad
-            self.estado_mesas[i] = {"estado": "Libre", "nombre": "", "capacidad": capacidad_defecto}
-            self.botones_mesas[i] = btn
+            self.estado_mesas[mesa_id] = {
+                "estado": estado,
+                "nombre": nombre,
+                "capacidad": capacidad,
+            }
+            self.botones_mesas[mesa_id] = btn
 
-        # Cargar estado desde Excel
-        archivo_Reservas = "Datos_Reservas.xlsx"
-        if os.path.exists(archivo_Reservas):
-            reservas = load_workbook(archivo_Reservas)
-            hoja = reservas.active
-            max_id = 0
-            for fila in hoja.iter_rows(min_row=2, values_only=True):
-                # Validar que la fila tenga al menos 4 columnas y que mesa_id no sea None
-                if fila is None or len(fila) < 4 or fila[0] is None:
-                    continue
-                mesa_id, nombre, estado, capacidad = fila[:4]
-                try:
-                    mesa_id = int(mesa_id)
-                except (TypeError, ValueError):
-                    continue
-                max_id = max(max_id, mesa_id)
-                if mesa_id not in self.botones_mesas:
-                    self.mesas += 1
-                    fila_index = (self.mesas - 1) // 3
-                    if fila_index >= len(self.filas):
-                        fila_frame = Frame(self.izquierda, bg=fondo)
-                        fila_frame.pack()
-                        self.filas.append(fila_frame)
-                    else:
-                        fila_frame = self.filas[fila_index]
-            
-                    btn = Button(
-                        fila_frame,
-                        text=f"Mesa {mesa_id}\nCapacidad: {capacidad}",
-                        width=12,
-                        height=3,
-                        bg="green",
-                        command=lambda n=mesa_id: Reservar_mesa(self.ventana, self.tipo, self, n)
-                    )
-                    btn.pack(side="left", padx=40, pady=10)
-                    self.botones_mesas[mesa_id] = btn
-            
-                self.estado_mesas[mesa_id] = {"estado": estado, "nombre": nombre, "capacidad": capacidad}
-                color = "red" if estado == "Ocupada" else "green"
-                texto = f"Mesa {mesa_id}\nCapacidad: {capacidad}" if estado == "Libre" else f"Mesa {mesa_id}\n({nombre})\nCapacidad: {capacidad}"
-                self.botones_mesas[mesa_id].configure(bg=color, text=texto)
-
-        #Boton solo para administradores para que agregue mesas
+        # Botón solo para administradores para que agregue mesas
         if self.tipo == "Administrador":
-            Button(self.parte_inferior, text="Agregar Mesa", width=16, font=("Arial", 12),bg=color_botones, command=self.agregar_mesa).pack(pady=10)
-    
-        Button(self.parte_inferior, text="Cerrar Sesión", width=16, font=("Arial", 12),bg=color_botones, command=lambda: self.cerrar_sesion(ventana)).pack(pady=10)
+            Button(
+                self.parte_inferior,
+                text="Agregar Mesa",
+                width=16,
+                font=("Arial", 12),
+                bg=color_botones,
+                command=self.agregar_mesa,
+            ).pack(pady=10)
+
+        Button(
+            self.parte_inferior,
+            text="Cerrar Sesión",
+            width=16,
+            font=("Arial", 12),
+            bg=color_botones,
+            command=lambda: self.cerrar_sesion(ventana),
+        ).pack(pady=10)
 
     def cerrar_sesion(self, ventana):
         self.ventana.destroy()
         ventana.deiconify()
 
     def agregar_mesa(self):
-            ventana_capacidad = Toplevel(self.ventana)
-            ventana_capacidad.title("Capacidad de la Mesa")
-            ventana_capacidad.geometry("300x150")
-            
-            Label(ventana_capacidad, text="Ingrese la capacidad:", font=("Arial", 14)).pack(pady=10)
-            entry_capacidad = Entry(ventana_capacidad, font=("Arial", 14))
-            entry_capacidad.pack(pady=5)
+        ventana_capacidad = Toplevel(self.ventana)
+        ventana_capacidad.title("Capacidad de la Mesa")
+        ventana_capacidad.geometry("300x150")
 
-            def guardar_capacidad():
-                capacidad = entry_capacidad.get()
-                if not capacidad.isdigit() or int(capacidad) <= 0:
-                    messagebox.showerror("Error", "Ingrese un número válido")
-                    return
+        Label(ventana_capacidad, text="Ingrese la capacidad:", font=("Arial", 14)).pack(
+            pady=10
+        )
+        entry_capacidad = Entry(ventana_capacidad, font=("Arial", 14))
+        entry_capacidad.pack(pady=5)
 
-                self.mesas += 1
-                fila_index = (self.mesas - 1) // 3
+        def guardar_capacidad():
+            capacidad = entry_capacidad.get()
+            if not capacidad.isdigit() or int(capacidad) <= 0:
+                messagebox.showerror("Error", "Ingrese un número válido")
+                return
 
-                if fila_index >= len(self.filas):
-                    fila_frame = Frame(self.izquierda, bg="#588E6B")
-                    fila_frame.pack()
-                    self.filas.append(fila_frame)
-                else:
-                    fila_frame = self.filas[fila_index]
+            reservas = load_workbook(archivo_Reservas)
+            hoja = reservas.active
 
-                btn = Button(
-                    fila_frame,
-                    text=f"Mesa {self.mesas}\nCapacidad: {capacidad}",
-                    width=12,
-                    height=3,
-                    bg="green",
-                    command=lambda n=self.mesas: Reservar_mesa(self.ventana, self.tipo, self, n)
-                )
-                btn.pack(side="left", padx=40, pady=10)
-                self.estado_mesas[self.mesas] = {"estado": "Libre", "nombre": "", "capacidad": capacidad}
-                self.botones_mesas[self.mesas] = btn
+            # Buscar huecos en los IDs
+            ids_existentes = [
+                fila[0].value for fila in hoja.iter_rows(min_row=2) if fila[0].value
+            ]
+            ids_existentes = sorted(ids_existentes)
 
-                archivo_Reservas = "Datos_Reservas.xlsx"
-                reservas = load_workbook(archivo_Reservas)
-                hoja = reservas.active
-                hoja.append([self.mesas, "", "Libre", capacidad])
-                reservas.save(archivo_Reservas)
+            nuevo_id = None
+            for i in range(1, max(ids_existentes) + 2):  # busca el primer hueco
+                if i not in ids_existentes:
+                    nuevo_id = i
+                    break
 
-                ventana_capacidad.destroy()
+            if nuevo_id is None:
+                nuevo_id = max(ids_existentes) + 1
 
-            Button(ventana_capacidad, text="Guardar", command=guardar_capacidad).pack(pady=10)
+            # Crear botón en la interfaz
+            fila_index = (nuevo_id - 1) // 3
+            if fila_index >= len(self.filas):
+                fila_frame = Frame(self.izquierda, bg="#588E6B")
+                fila_frame.pack()
+                self.filas.append(fila_frame)
+            else:
+                fila_frame = self.filas[fila_index]
+
+            btn = Button(
+                fila_frame,
+                text=f"Mesa {nuevo_id}\nCapacidad: {capacidad}",
+                width=12,
+                height=3,
+                bg="green",
+                command=lambda n=nuevo_id: Reservar_mesa(
+                    self.ventana, self.tipo, self, n
+                ),
+            )
+            btn.pack(side="left", padx=40, pady=10)
+            self.estado_mesas[nuevo_id] = {
+                "estado": "Libre",
+                "nombre": "",
+                "capacidad": capacidad,
+            }
+            self.botones_mesas[nuevo_id] = btn
+
+            # Guardar en Excel
+            hoja.append([nuevo_id, "", "Libre", capacidad])
+            reservas.save(archivo_Reservas)
+
+            ventana_capacidad.destroy()
+
+        Button(ventana_capacidad, text="Guardar", command=guardar_capacidad).pack(
+            pady=10
+        )
 
     def mostrar_info(self):
         ventana_info = Toplevel(self.ventana)
@@ -212,11 +250,11 @@ class Restaurante:
         Label(
             ventana_info,
             text="Hace más de 20 años abrimos nuestras puertas\n"
-                 "con la idea de compartir el sabor de la cocina casera.\n\n"
-                 "Con el tiempo nos convertimos en un punto de encuentro\n"
-                 "para familias y amigos que buscan disfrutar\n"
-                 "de buena comida y momentos inolvidables.",
+            "con la idea de compartir el sabor de la cocina casera.\n\n"
+            "Con el tiempo nos convertimos en un punto de encuentro\n"
+            "para familias y amigos que buscan disfrutar\n"
+            "de buena comida y momentos inolvidables.",
             wraplength=320,
-            justify="center"
+            justify="center",
         ).pack(pady=20)
         Button(ventana_info, text="Cerrar", command=ventana_info.destroy).pack(pady=10)
