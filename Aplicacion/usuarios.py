@@ -73,9 +73,11 @@ class SeleccionarTipo:
         # botones
         self.der_inferior.columnconfigure(0, weight=1)
 
-        Button(self.der_inferior, text="Cliente", width=25, height=2, font=("Arial", 14), bg=color_botones, command=lambda: self.elegir_cliente("Cliente")).grid(row=0, column=0, pady=10, padx=20)
+        Button(self.der_inferior, text="Cliente", width=25, height=2, font=("Arial", 14), bg=color_botones, command=lambda: self.elegir_cliente("Cliente"),
+                relief="raised", bd=4).grid(row=0, column=0, pady=10, padx=20)
 
-        Button(self.der_inferior, text="Administrador", width=25, height=2, font=("Arial", 14), bg=color_botones, command=lambda: self.elegir_admin("Administrador")).grid(row=1, column=0, pady=10, padx=20)
+        Button(self.der_inferior, text="Administrador", width=25, height=2, font=("Arial", 14), bg=color_botones, command=lambda: self.elegir_admin("Administrador"),
+                relief="raised", bd=4).grid(row=1, column=0, pady=10, padx=20)
 
     def redimensionar_imagen(self, event):
         # Ajusta la imagen al tamaño del frame izquierdo
@@ -158,11 +160,11 @@ class Login:
         self.parte_inferior.columnconfigure(0, weight=1)
         self.parte_inferior.columnconfigure(1, weight=1)
 
-        Button(self.parte_inferior, text="Registrar", width=35, height=2, font=("Arial", 14), bg= color_botones, command=lambda: self.eleccion_registrar(ventana)).grid(row=2, column=0, columnspan=2, padx=35, pady=5)
+        Button(self.parte_inferior, text="Registrar", width=35, height=2, font=("Arial", 14), bg= color_botones, command=lambda: self.eleccion_registrar(ventana), relief="raised", bd=4).grid(row=2, column=0, columnspan=2, padx=35, pady=5)
 
-        Button(self.parte_inferior, text="Ingresar", width=35, height=2, font=("Arial", 14), bg= color_botones, command=lambda: self.eleccion_ingresar(ventana)).grid(row=4, column=0, columnspan=4, padx=35, pady=5)
+        Button(self.parte_inferior, text="Ingresar", width=35, height=2, font=("Arial", 14), bg= color_botones, command=lambda: self.eleccion_ingresar(ventana), relief="raised", bd=4).grid(row=4, column=0, columnspan=4, padx=35, pady=5)
 
-        Button(self.parte_inferior, text="Atras", width=35, height=2, font=("Arial", 14), bg=color_botones, command=lambda: self.regresar(ventana)).grid(row=6, column=0, columnspan=6, padx=35, pady=5)
+        Button(self.parte_inferior, text="Atras", width=35, height=2, font=("Arial", 14), bg=color_botones, command=lambda: self.regresar(ventana), relief="raised", bd=4).grid(row=6, column=0, columnspan=6, padx=35, pady=5)
 
     def redimensionar_imagen(self, event):
         # Ajusta la imagen al tamaño del frame izquierdo
@@ -259,9 +261,9 @@ class Registro:
         self.entry_contrasena.grid(row=1, column=1, columnspan=3, padx=5, sticky="w")
 
         # Botones
-        Button(self.parte_inferior, text="Guardar", width=16, font=("Arial", 12), bg=color_botones, command=lambda: self.guardar_datos(ventana)).grid(row=2, column=0, columnspan=2, padx=35, pady=5)
+        Button(self.parte_inferior, text="Guardar", width=16, font=("Arial", 12), bg=color_botones, command=lambda: self.guardar_datos(ventana), relief="raised", bd=4).grid(row=2, column=0, columnspan=2, padx=35, pady=5)
 
-        Button(self.parte_inferior, text="Atras", width=16, font=("Arial", 12),bg=color_botones, command=lambda: self.regresar(ventana)).grid(row=8, column=0, columnspan=4, padx=35, pady=5)
+        Button(self.parte_inferior, text="Atras", width=16, font=("Arial", 12),bg=color_botones, command=lambda: self.regresar(ventana), relief="raised", bd=4).grid(row=8, column=0, columnspan=4, padx=35, pady=5)
 
     #Método para redimensionar la imagen izquierda
     def redimensionar_imagen(self, event):
@@ -360,9 +362,9 @@ class Login_Ingresar:
         self.entry_contrasena.grid(row=1, column=1, columnspan=3, padx=5, sticky="w")
 
         # Botones
-        Button(self.parte_inferior, text="Ingresar", width=16, font=("Arial", 12),bg= color_botones, command=self.verificacion_datos).grid(row=2, column=0, columnspan=2, padx=35, pady=5)
+        Button(self.parte_inferior, text="Ingresar", width=16, font=("Arial", 12),bg= color_botones, command=self.verificacion_datos, relief="raised", bd=4).grid(row=2, column=0, columnspan=2, padx=35, pady=5)
 
-        Button(self.parte_inferior, text="Atrás", width=16, font=("Arial", 12),bg= color_botones, command=lambda: self.regresar(ventana)).grid(row=8, column=0, columnspan=4, padx=35, pady=5)
+        Button(self.parte_inferior, text="Atrás", width=16, font=("Arial", 12),bg= color_botones, command=lambda: self.regresar(ventana), relief="raised", bd=4).grid(row=8, column=0, columnspan=4, padx=35, pady=5)
 
     #Método para redimensionar la imagen izquierda
     def redimensionar_imagen(self, event):

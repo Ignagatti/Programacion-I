@@ -24,36 +24,58 @@ class Restaurante:
         self.tipo = tipo
         self.usuario = usuario
         self.ventana = Toplevel(ventana)
-        self.ventana.geometry("700x700")
+        self.ventana.geometry("900x700")
         self.ventana.title("Restaurante")
 
         fondo = "#588E6B"
+        fondo_derecha= "#41694F"
         color_botones= "#A7CBBF"
 
-        self.ventana.configure(bg=fondo)
+        #CONTENEDOR PRINCIPAL DIVIDIDO EN 2 COLUMNAS
+        self.contenedor = Frame(self.ventana, bg=fondo)
+        self.contenedor.pack(fill="both", expand=True)
 
-        #Dividimos pantalla en superiro e inferior
-        self.parte_superior = Frame(self.ventana, bg=fondo)
+        self.contenedor.columnconfigure(0, weight=3)  # izquierda = imagen grande
+        self.contenedor.columnconfigure(1, weight=2)  # derecha = formulario
+        self.contenedor.rowconfigure(0, weight=1)
+
+        #FRAME IZQUIERDO (IMAGEN GRANDE)
+        self.izquierda = Frame(self.contenedor, bg=fondo, relief="raised", bd=6)
+        self.izquierda.grid(row=0, column=0, sticky="nsew")
+
+        #FRAME DERECHO (FORMULARIO)
+        self.derecha = Frame(self.contenedor, bg=fondo_derecha,  relief="raised", bd=4 )
+        self.derecha.grid(row=0, column=1, sticky="nsew")
+
+        # Parte superior: título e imagen de login
+        self.parte_superior = Frame(self.derecha, bg=fondo_derecha)
         self.parte_superior.pack(fill="both", expand=True)
 
-        self.parte_inferior = Frame(self.ventana, bg=fondo)
+        Label(self.parte_superior, text="Que desea hacer?", font=("Calisto MT", 20, "bold"), bg=fondo_derecha).pack(side="top", pady=20)
+
+        #Imagen
+        try:
+            self.imagen = Image.open(r"Logo.png").resize((180, 190))
+            self.render = ImageTk.PhotoImage(self.imagen)
+            Label(self.parte_superior, image=self.render, bg=fondo_derecha).pack(expand=True, fill="both", side="top")
+        except Exception:
+            Label(self.parte_superior, text="[Imagen login no encontrada]", bg=fondo_derecha, font=("Arial", 14, "italic"), fg="gray").pack(expand=True, fill="both", side="top")
+
+
+        # Parte inferior: entradas y botones
+        self.parte_inferior = Frame(self.derecha, bg=fondo_derecha)
         self.parte_inferior.pack(fill="both", expand=True)
 
+        self.parte_inferior.columnconfigure(0, weight=1)
+        self.parte_inferior.columnconfigure(1, weight=1)
+
         # Botón de información
-        self.canvas_info = tk.Canvas(self.parte_superior, width=30, height=30, highlightthickness=0, bg=fondo)
+        self.canvas_info = tk.Canvas(self.izquierda, width=30, height=30, highlightthickness=0, bg=fondo)
         self.canvas_info.place(relx=1.0, x=-15, y=15, anchor="ne")
         circulo = self.canvas_info.create_oval(2, 2, 28, 28, fill="#3498db", outline="#2980b9")
         texto = self.canvas_info.create_text(15, 15, text="i", fill="white", font=("Times New Roman", 14, "italic"))
         self.canvas_info.tag_bind(circulo, "<Button-1>", lambda e: self.mostrar_info())
         self.canvas_info.tag_bind(texto, "<Button-1>", lambda e: self.mostrar_info())
-
-        # Imagen
-        try:
-            self.imagen = Image.open("Logo.png").resize((120, 140))
-            self.render = ImageTk.PhotoImage(self.imagen)
-            Label(self.parte_superior, image=self.render, bg=fondo).pack(pady=10)
-        except Exception:
-            Label(self.parte_superior, text="[Logo no encontrado]", bg=fondo, font=("Arial", 14, "italic"), fg="gray").pack(pady=10)
 
         #Fijamos las mesas principales en 6
         self.mesas = 9
@@ -64,7 +86,7 @@ class Restaurante:
         # Crear mesas iniciales
         for i in range(1, self.mesas + 1):
             if (i - 1) % 3 == 0:
-                fila_frame = Frame(self.parte_superior, bg=fondo)
+                fila_frame = Frame(self.izquierda, bg=fondo)
                 fila_frame.pack()
                 self.filas.append(fila_frame)
 
@@ -104,7 +126,7 @@ class Restaurante:
                     self.mesas += 1
                     fila_index = (self.mesas - 1) // 3
                     if fila_index >= len(self.filas):
-                        fila_frame = Frame(self.parte_superior, bg=fondo)
+                        fila_frame = Frame(self.izquierda, bg=fondo)
                         fila_frame.pack()
                         self.filas.append(fila_frame)
                     else:
@@ -155,7 +177,7 @@ class Restaurante:
                 fila_index = (self.mesas - 1) // 3
 
                 if fila_index >= len(self.filas):
-                    fila_frame = Frame(self.parte_superior, bg="#588E6B")
+                    fila_frame = Frame(self.izquierda, bg="#588E6B")
                     fila_frame.pack()
                     self.filas.append(fila_frame)
                 else:

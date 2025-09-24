@@ -36,9 +36,21 @@ class Reservar_mesa:
         )
         Label(self.parte_superior, text=titulo, font=("Calisto MT", 20, "bold"), bg=fondo).pack(pady=20)
 
-       
 
         mesa_info = self.restaurante.estado_mesas[self.mesa_id]
+
+        # Imagen
+        try:
+            if mesa_info["estado"] == "Ocupada":
+                self.imagen= Image.open("reservado.png").resize((300,220))
+                self.render = ImageTk.PhotoImage(self.imagen)
+                Label(self.parte_superior, image=self.render, bg=fondo).pack(expand=True, fill="both", side="top")
+            if mesa_info["estado"] == "Libre":
+                self.imagen = Image.open("reserva.png").resize((210, 220))
+                self.render = ImageTk.PhotoImage(self.imagen)
+                Label(self.parte_superior, image=self.render, bg=fondo).pack(expand=True, fill="both", side="top")
+        except Exception:
+            Label(self.parte_superior, text="[Imagen reserva no encontrada]", bg=fondo, font=("Arial", 14, "italic"), fg="gray").pack(expand=True, fill="both", side="top")
 
         # Restricción si está ocupada
         if mesa_info["estado"] == "Ocupada" and self.tipo != "Administrador" and mesa_info["nombre"] != self.restaurante.usuario:
@@ -76,18 +88,7 @@ class Reservar_mesa:
         # Mostrar botón cancelar si corresponde
         self.mostrar_cancelar()
     
-     # Imagen
-        try:
-            if mesa_info["estado"] == "Ocupada":
-                self.imagen= Image.open("reservado.png").resize((210,220))
-                self.render = ImageTk.PhotoImage(self.imagen)
-                Label(self.parte_superior, image=self.render, bg=fondo).pack(expand=True, fill="both", side="top")
-            else:
-                self.imagen = Image.open("reserva.png").resize((210, 220))
-                self.render = ImageTk.PhotoImage(self.imagen)
-                Label(self.parte_superior, image=self.render, bg=fondo).pack(expand=True, fill="both", side="top")
-        except Exception:
-            Label(self.parte_superior, text="[Imagen reserva no encontrada]", bg=fondo, font=("Arial", 14, "italic"), fg="gray").pack(expand=True, fill="both", side="top")
+     
 
     #MÉTODOS 
 
