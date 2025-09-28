@@ -14,7 +14,7 @@ else:
     reservas = Workbook()
     wreservas = reservas.active
     wreservas.append(["ID", "Usuario", "Estado", "Capacidad"])
-    for i in range(1, 10):  # mesas 1 a 9
+    for i in range(1, 13):  # mesas 1 a 12
         wreservas.append([i, "", "Libre", 4])  # capacidad por defecto 4
     reservas.save(archivo_Reservas)
 
