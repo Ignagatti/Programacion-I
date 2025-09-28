@@ -276,8 +276,8 @@ class Registro:
         Login(ventana, self.tipo)
 
     def guardar_datos(self, ventana):
-        usuario = self.entry_usuario.get()
-        contrasena = self.entry_contrasena.get()
+        usuario = self.entry_usuario.get().strip()
+        contrasena = self.entry_contrasena.get().strip()
 
         # se valida que los campos se hayan completado
         if not usuario or not contrasena:
