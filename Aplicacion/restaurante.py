@@ -1,4 +1,3 @@
-# restaurante.py
 import tkinter as tk
 from tkinter import Toplevel, Frame, Button, Label, Entry, messagebox
 from PIL import Image, ImageTk
@@ -37,11 +36,11 @@ class Restaurante:
         self.contenedor = Frame(self.ventana, bg=fondo)
         self.contenedor.pack(fill="both", expand=True)
 
-        self.contenedor.columnconfigure(0, weight=3)  # izquierda = imagen grande
+        self.contenedor.columnconfigure(0, weight=3)  # izquierda = mesas
         self.contenedor.columnconfigure(1, weight=2)  # derecha = formulario
         self.contenedor.rowconfigure(0, weight=1)
 
-        # FRAME IZQUIERDO (IMAGEN GRANDE)
+        # FRAME IZQUIERDO (MESAS)
         self.izquierda = Frame(self.contenedor, bg=fondo, relief="raised", bd=6)
         self.izquierda.grid(row=0, column=0, sticky="nsew")
 
@@ -98,7 +97,6 @@ class Restaurante:
         self.canvas_info.tag_bind(texto, "<Button-1>", lambda e: self.mostrar_info())
 
         # Diccionarios de control
-        self.filas = []
         self.estado_mesas = {}
         self.botones_mesas = {}
 
@@ -114,22 +112,17 @@ class Restaurante:
             except (TypeError, ValueError):
                 continue
 
-            fila_index = (mesa_id - 1) // 3
-            if fila_index >= len(self.filas):
-                fila_frame = Frame(self.izquierda, bg=fondo)
-                fila_frame.pack()
-                self.filas.append(fila_frame)
-            else:
-                fila_frame = self.filas[fila_index]
-
             texto_btn = (
                 f"Mesa {mesa_id}\nCapacidad: {capacidad}"
                 if estado == "Libre"
                 else f"Mesa {mesa_id}\n({nombre})\nCapacidad: {capacidad}"
             )
 
+            fila_index = (mesa_id - 1) // 3
+            columna_index = (mesa_id - 1) % 3
+
             btn = Button(
-                fila_frame,
+                self.izquierda,
                 text=texto_btn,
                 width=12,
                 height=3,
@@ -138,7 +131,7 @@ class Restaurante:
                     self.ventana, self.tipo, self, n
                 ),
             )
-            btn.pack(side="left", padx=40, pady=10)
+            btn.grid(row=fila_index, column=columna_index, padx=40, pady=10)
 
             self.estado_mesas[mesa_id] = {
                 "estado": estado,
@@ -147,7 +140,7 @@ class Restaurante:
             }
             self.botones_mesas[mesa_id] = btn
 
-        # Botón solo para administradores para que agregue mesas
+        # Botones solo para administradores
         if self.tipo == "Administrador":
             Button(
                 self.parte_inferior,
@@ -206,17 +199,11 @@ class Restaurante:
             if nuevo_id is None:
                 nuevo_id = max(ids_existentes) + 1
 
-            # Crear botón en la interfaz
             fila_index = (nuevo_id - 1) // 3
-            if fila_index >= len(self.filas):
-                fila_frame = Frame(self.izquierda, bg="#588E6B")
-                fila_frame.pack()
-                self.filas.append(fila_frame)
-            else:
-                fila_frame = self.filas[fila_index]
+            columna_index = (nuevo_id - 1) % 3
 
             btn = Button(
-                fila_frame,
+                self.izquierda,
                 text=f"Mesa {nuevo_id}\nCapacidad: {capacidad}",
                 width=12,
                 height=3,
@@ -225,7 +212,7 @@ class Restaurante:
                     self.ventana, self.tipo, self, n
                 ),
             )
-            btn.pack(side="left", padx=40, pady=10)
+            btn.grid(row=fila_index, column=columna_index, padx=40, pady=10)
             self.estado_mesas[nuevo_id] = {
                 "estado": "Libre",
                 "nombre": "",
@@ -243,6 +230,7 @@ class Restaurante:
             pady=10
         )
 
+   
     def mostrar_info(self):
         ventana_info = Toplevel(self.ventana)
         ventana_info.title("Nuestra Historia")

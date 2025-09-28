@@ -284,9 +284,28 @@ class Registro:
             messagebox.showwarning("Cuidado!", "Se deben completar ambos campos")
             return
 
-        # Agregamos usuario y contraseña al excel de usuarios
+        # Si no existe el archivo, lo creo con encabezado
+        if not os.path.exists(archivo_usuarios):
+            wb = Workbook()
+            ws = wb.active
+            ws.append(["Usuario", "Contraseña", "Tipo"])
+            wb.save(archivo_usuarios)
+
+        wb = load_workbook(archivo_usuarios)
+        ws = wb.active
+
+        # Verificar si ya existe ese usuario
+        for nombre in ws.iter_rows(min_row=2, values_only=True):
+            if nombre[0] == usuario:
+                messagebox.showerror("Error", "Ese nombre de usuario ya está registrado, pruebe con otro")
+                wb.close()
+                return
+
+        # Si no existe, lo guardamos
         ws.append([usuario, contrasena, self.tipo])
         wb.save(archivo_usuarios)
+        wb.close()
+
         messagebox.showinfo("Datos", "Se guardaron los datos")
 
         self.entry_usuario.delete(0, "end")
