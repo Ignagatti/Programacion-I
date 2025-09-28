@@ -29,7 +29,7 @@ class Restaurante:
         self.ventana.title("Restaurante")
 
         fondo = "#588E6B"
-        fondo_derecha = "#41694F"
+        fondo_derecha = "#3D5244"
         color_botones = "#A7CBBF"
 
         # CONTENEDOR PRINCIPAL DIVIDIDO EN 2 COLUMNAS
