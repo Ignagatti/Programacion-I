@@ -25,11 +25,11 @@ class Restaurante:
         self.tipo = tipo
         self.usuario = usuario
         self.ventana = Toplevel(ventana)
-        self.ventana.geometry("900x700")
+        self.ventana.geometry("900x700+300+100")
         self.ventana.title("Restaurante")
 
-        fondo = "#588E6B"
-        fondo_derecha = "#3D5244"
+        fondo = "#427c64"
+        fondo_derecha = "#e5e8df"
         color_botones = "#A7CBBF"
 
         # CONTENEDOR PRINCIPAL DIVIDIDO EN 2 COLUMNAS
@@ -127,11 +127,11 @@ class Restaurante:
                 width=12,
                 height=3,
                 bg="red" if estado == "Ocupada" else "green",
-                command=lambda n=mesa_id: Reservar_mesa(
+                relief="raised", bd=4, command=lambda n=mesa_id: Reservar_mesa(
                     self.ventana, self.tipo, self, n
                 ),
             )
-            btn.grid(row=fila_index, column=columna_index, padx=40, pady=10)
+            btn.grid(row=fila_index, column=columna_index, padx=40, pady=20)
 
             self.estado_mesas[mesa_id] = {
                 "estado": estado,
@@ -148,7 +148,7 @@ class Restaurante:
                 width=16,
                 font=("Arial", 12),
                 bg=color_botones,
-                command=self.agregar_mesa,
+                relief="raised",command=self.agregar_mesa,
             ).pack(pady=10)
 
         Button(
@@ -157,7 +157,7 @@ class Restaurante:
             width=16,
             font=("Arial", 12),
             bg=color_botones,
-            command=lambda: self.cerrar_sesion(ventana),
+            relief="raised",command=lambda: self.cerrar_sesion(ventana),
         ).pack(pady=10)
 
     def cerrar_sesion(self, ventana):
@@ -208,11 +208,11 @@ class Restaurante:
                 width=12,
                 height=3,
                 bg="green",
-                command=lambda n=nuevo_id: Reservar_mesa(
+                relief="raised", bd=4,command=lambda n=nuevo_id: Reservar_mesa(
                     self.ventana, self.tipo, self, n
                 ),
             )
-            btn.grid(row=fila_index, column=columna_index, padx=40, pady=10)
+            btn.grid(row=fila_index, column=columna_index, padx=40, pady=20)
             self.estado_mesas[nuevo_id] = {
                 "estado": "Libre",
                 "nombre": "",

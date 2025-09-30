@@ -12,8 +12,8 @@ class Reservar_mesa:
         self.mesa_id = mesa_id
 
         self.ventana = Toplevel(ventana)
-        self.ventana.geometry("400x700")
-        self.ventana.title("Reservar Mesa")
+        self.ventana.geometry("400x700+300+100")
+        self.ventana.title("Restaurante - Reservar Mesa")
 
         fondo = "#588E6B"
         color_botones= "#A7CBBF"
@@ -87,7 +87,6 @@ class Reservar_mesa:
 
         # Mostrar botón cancelar si corresponde
         self.mostrar_cancelar()
-    
      
 
     #MÉTODOS 
