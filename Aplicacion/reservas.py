@@ -184,6 +184,16 @@ class Reservar_mesa:
         Button(ventana_num, text="Guardar", command=guardar).pack(pady=10)
 
     def eliminar(self):
+        # 1. Obtengo el estado actual de la mesa
+        mesa_info = self.restaurante.estado_mesas[self.mesa_id]
+        estado_actual = mesa_info.get("estado")
+        
+        # 2. Verifico si la mesa está Ocupada
+        if estado_actual == "Ocupada":
+            messagebox.showerror("Error", "No se puede eliminar la mesa: ¡Está reservada!")
+            return
+
+        # 3. Si está Libre, SE PUEDE ELIMINAR (código original)
         if messagebox.askyesno("Eliminar Mesa", "¿Está seguro que desea eliminar esta mesa?"):
             self.eliminar_de_excel()
             btn = self.restaurante.botones_mesas.get(self.mesa_id)
