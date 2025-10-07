@@ -179,7 +179,7 @@ class Login:
     def mostrar_info(self):
         ventana_info = Toplevel(self.ventana)
         ventana_info.title("Información")
-        ventana_info.geometry("900x700+300+100")
+        ventana_info.geometry("400x250")
         Label(ventana_info, text="Abrimos de jueves a domingo...\n\n Te acompañamos en tus momentos especiales,\n ya sea en el almuerzo o en la cena. ¡Te esperamos! \n\n\n Número de contacto: 3546 879736", wraplength=280, justify="center").pack(pady=20)
         Button(ventana_info, text="Cerrar", command=ventana_info.destroy).pack(pady=10)
     
