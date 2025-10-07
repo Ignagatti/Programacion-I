@@ -112,7 +112,7 @@ class Reservar_mesa:
     def modificar_capacidad(self):
         ventana_cap = Toplevel(self.ventana)
         ventana_cap.title("Modificar Capacidad")
-        ventana_cap.geometry("300x150")
+        ventana_cap.geometry("300x150+400+100")
 
         Label(ventana_cap, text="Nueva capacidad:", font=("Arial", 14)).pack(pady=10)
         entry_cap = Entry(ventana_cap, font=("Arial", 14))
@@ -138,7 +138,7 @@ class Reservar_mesa:
     def modificar_numero_mesa(self):
         ventana_num = Toplevel(self.ventana)
         ventana_num.title("Modificar Número de Mesa")
-        ventana_num.geometry("300x150")
+        ventana_num.geometry("300x150+400+100")
 
         Label(ventana_num, text="Nuevo número de mesa:", font=("Arial", 14)).pack(pady=10)
         entry_num = Entry(ventana_num, font=("Arial", 14))

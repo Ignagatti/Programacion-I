@@ -234,7 +234,7 @@ class Restaurante:
     def mostrar_info(self):
         ventana_info = Toplevel(self.ventana)
         ventana_info.title("Nuestra Historia")
-        ventana_info.geometry("400x250")
+        ventana_info.geometry("400x250+300+100")
         Label(
             ventana_info,
             text="Hace más de 20 años abrimos nuestras puertas\n"
