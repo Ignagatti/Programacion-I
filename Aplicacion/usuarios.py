@@ -19,7 +19,7 @@ else:
 class SeleccionarTipo:
     def __init__(self, ventana):
         self.ventana = ventana
-        self.ventana.geometry("800x600+300+100")
+        self.ventana.geometry("900x700+300+100")
         self.ventana.title("Restaurante - Tipo de Usuario")
 
         fondo = "#588E6B"
@@ -97,7 +97,7 @@ class Login:
     def __init__(self, ventana, tipo): #Constructores
         self.tipo=tipo
         self.ventana=Toplevel(ventana)
-        self.ventana.geometry("800x600+300+100")  # ahora más ancho para que entre la imagen
+        self.ventana.geometry("900x700+300+100")  # ahora más ancho para que entre la imagen
         self.ventana.title("Restaurante - Seleccione el tipo de usuario")
 
         fondo = "#588E6B"
@@ -179,7 +179,7 @@ class Login:
     def mostrar_info(self):
         ventana_info = Toplevel(self.ventana)
         ventana_info.title("Información")
-        ventana_info.geometry("400x200+300+100")
+        ventana_info.geometry("900x700+300+100")
         Label(ventana_info, text="Abrimos de jueves a domingo...\n\n Te acompañamos en tus momentos especiales,\n ya sea en el almuerzo o en la cena. ¡Te esperamos! \n\n\n Número de contacto: 3546 879736", wraplength=280, justify="center").pack(pady=20)
         Button(ventana_info, text="Cerrar", command=ventana_info.destroy).pack(pady=10)
     
@@ -197,7 +197,7 @@ class Registro:
     def __init__(self, ventana, tipo): #Constructores
         self.tipo = tipo
         self.ventana = Toplevel(ventana)
-        self.ventana.geometry("800x600+300+100")  # más ancho para dividir en dos
+        self.ventana.geometry("900x700+300+100")  # más ancho para dividir en dos
         self.ventana.title("Restaurante - Registro")
 
         fondo = "#588E6B"
@@ -318,7 +318,7 @@ class Login_Ingresar:
     def __init__(self, ventana, tipo):  # Constructores
         self.tipo = tipo
         self.ventana = Toplevel(ventana)
-        self.ventana.geometry("800x600+300+100")  # más ancho para dividir en dos columnas
+        self.ventana.geometry("900x700+300+100")  # más ancho para dividir en dos columnas
         self.ventana.title("Restaurante - Ingresar")
 
         fondo = "#588E6B"

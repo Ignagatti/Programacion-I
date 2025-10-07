@@ -193,7 +193,7 @@ class Reservar_mesa:
             messagebox.showerror("Error", "No se puede eliminar la mesa: ¡Está reservada!")
             return
 
-        # 3. Si está Libre, SE PUEDE ELIMINAR (código original)
+        # 3. Si está Libre, SE PUEDE ELIMINAR 
         if messagebox.askyesno("Eliminar Mesa", "¿Está seguro que desea eliminar esta mesa?"):
             self.eliminar_de_excel()
             btn = self.restaurante.botones_mesas.get(self.mesa_id)
